@@ -31,9 +31,13 @@ browser-gui-agent/
 │   └── definitions.py  # Task definitions with goals, URLs, and success checks
 ├── eval/
 │   ├── harness.py      # Eval runner — scores output, measures latency
-│   └── results/        # JSON results per task (auto-generated)
+│   └── results/
+│       └── summary.md  # Committed eval results (5/5 pass)
+├── tests/
+│   ├── test_success_fns.py  # Unit tests for all task success functions
+│   └── test_vision.py       # Unit tests for GPT-4o response validation
 ├── screenshots/        # Per-step screenshots (auto-generated)
-├── replay/             # GIF and HTML replays of agent runs (auto-generated)
+├── replay/             # GIF replays of agent runs
 ├── main.py             # Entry point — run all tasks or a single task by ID
 ├── requirements.txt
 └── .env                # API key (not committed)
@@ -46,7 +50,7 @@ browser-gui-agent/
 ### 1. Clone and create a virtual environment
 
 ```bash
-git clone https://github.com/your-username/browser-gui-agent.git
+git clone https://github.com/VinaySampath14/browser-gui-agent.git
 cd browser-gui-agent
 python -m venv venv
 source venv/bin/activate        # Windows: venv\Scripts\activate
@@ -73,7 +77,7 @@ OPENAI_API_KEY=sk-...your-key-here...
 
 ## Running
 
-### Run all 3 tasks
+### Run all 5 tasks
 
 ```bash
 python main.py
@@ -85,6 +89,14 @@ python main.py
 python main.py --task cheapest_car
 python main.py --task first_golf_specs
 python main.py --task bmw_filter_count
+python main.py --task ui_polo_price_filter
+python main.py --task contact_form_fill
+```
+
+### Run tests
+
+```bash
+pytest tests/ -v
 ```
 
 ---
@@ -136,10 +148,12 @@ Results saved: eval/results/
 ## Key Design Decisions
 
 - **No hard-coded selectors** — the agent decides what to interact with purely from the screenshot.
+- **`click_selector` action** — CSS-selector-based clicking for reliable interaction with dynamic UI elements (e.g. filter overlays) where coordinate-based clicks are fragile.
 - **Stealth mode** — `playwright-stealth` patches browser fingerprints to avoid bot detection.
 - **Loop detection** — if the last 3 actions are identical, the agent aborts to avoid infinite loops.
 - **GDPR handling** — consent banners are dismissed automatically before the agent loop starts.
 - **Structured JSON output** — GPT-4o is constrained to a JSON schema via `response_format`, so parsing never fails on format issues.
+- **39 unit tests** — cover all task success functions and GPT-4o response validation (`pytest tests/`).
 
 ---
 
