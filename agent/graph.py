@@ -73,6 +73,9 @@ async def act(state: AgentState, config: RunnableConfig) -> AgentState:
         elif action == "scroll":
             await browser.scroll(params.get("direction", "down"))
 
+        elif action == "click_selector":
+            await browser.click_selector(params["selector"])
+
         elif action == "press":
             await browser.press(params["key"])
 

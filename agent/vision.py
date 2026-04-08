@@ -16,16 +16,17 @@ Respond ONLY with a valid JSON object in this exact schema:
 {
   "observation": "<what you see on screen right now>",
   "reasoning": "<why this is the next best action>",
-  "action": "<one of: click | type | fill | scroll | press | navigate | extract | done>",
+  "action": "<one of: click | click_selector | type | fill | scroll | press | navigate | extract | done>",
   "params": {
-    // for click:    { "x": int, "y": int, "description": "what you're clicking" }
-    // for type:     { "text": "text to type" }
-    // for fill:     { "selector": "css selector", "text": "value" }
-    // for scroll:   { "direction": "down" | "up" }
-    // for press:    { "key": "Enter" | "Tab" | etc }
-    // for navigate: { "url": "https://..." }
-    // for extract:  { "result": "the final answer to the task" }
-    // for done:     { "result": "the final answer to the task" }
+    // for click:          { "x": int, "y": int, "description": "what you're clicking" }
+    // for click_selector: { "selector": "css selector", "description": "what you're clicking" }
+    // for type:           { "text": "text to type" }
+    // for fill:           { "selector": "css selector", "text": "value" }
+    // for scroll:         { "direction": "down" | "up" }
+    // for press:          { "key": "Enter" | "Tab" | "Escape" | etc }
+    // for navigate:       { "url": "https://..." }
+    // for extract:        { "result": "the final answer to the task" }
+    // for done:           { "result": "the final answer to the task" }
   }
 }
 
@@ -41,9 +42,11 @@ General rules:
 - NEVER use action "done" with an error message — only use "done" when you have the actual answer to the task.
 
 Filter / search form rules:
-- To apply a price or mileage filter: look for input fields labeled "Preis bis", "max. Preis", "bis €", or a dropdown with price ranges. Use fill+selector for text inputs, click for dropdowns. After setting the value, look for a "Suchen" or "Anwenden" (Apply) button and click it. Wait for the page to reload before extracting the result count.
-- If a filter input is a dropdown (select element), use fill with the CSS selector "select[name=...]" and the numeric value as text. If it is a free-text input, use fill with the appropriate selector.
-- After applying a filter, the result count is usually shown as "X Angebote" or "X Ergebnisse" near the top of the listing page. Extract that number.
+- Prefer click_selector over click+coords when opening filter sections — it is more reliable. For AutoScout24's price filter try: click_selector with selector "button[data-testid*='price']", or "button:has-text('Preis')", or "[aria-label*='Preis']".
+- On AutoScout24, filter sections (Preis, Kilometerstand, etc.) open as FULL-SCREEN OVERLAY PANELS when clicked. Inside the overlay you will see min/max input fields and a large button at the bottom showing "X Angebote anzeigen". Fill the input fields, then click_selector that button to apply and return to results.
+- Inside an open price filter overlay, try fill with selector "input[data-testid*='price-max']", "input[placeholder*='bis']", or "input[name*='price']" for the max price field.
+- If an unexpected overlay is blocking the page, press Escape to close it before continuing.
+- After applying a filter, the result count appears as "X Angebote" near the top. Extract that number.
 
 Contact form rules:
 - If the task says "Do NOT click send / Senden / Absenden": fill every requested field using the fill action, then use "extract" to return the answer. Never click the submit button.
@@ -119,7 +122,7 @@ def _validate(parsed: dict) -> dict:
     if missing:
         raise ValueError(f"GPT-4o response missing fields: {missing}. Got: {parsed}")
 
-    valid_actions = {"click", "type", "fill", "scroll", "press", "navigate", "extract", "done"}
+    valid_actions = {"click", "click_selector", "type", "fill", "scroll", "press", "navigate", "extract", "done"}
     if parsed["action"] not in valid_actions:
         raise ValueError(f"Unknown action: {parsed['action']}")
 

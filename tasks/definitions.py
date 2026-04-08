@@ -61,15 +61,15 @@ TASKS = [
         "id": "ui_polo_price_filter",
         "goal": (
             "You are on the AutoScout24 search results page showing VW Polo cars with no price filter applied. "
-            "Use the price filter controls visible on the page to set the maximum price to 10,000 euros. "
-            "Look for a 'Preis bis' or 'max. Preis' input field or dropdown in the filter panel. "
-            "After applying the filter (click Suchen or the apply button if present), "
-            "return the total number of results shown."
+            "Click on the 'Preis' section in the left filter panel to open the price filter overlay. "
+            "Inside the overlay, find the maximum price input field (labeled 'bis' or 'max') and set it to 10000. "
+            "Then click the large button at the bottom of the overlay (e.g. 'X Angebote anzeigen') to apply the filter. "
+            "If a different overlay opens by mistake, press Escape to close it first. "
+            "After returning to the results page, return the total number of results shown (e.g. '2.341 Angebote')."
         ),
-        # Polo listings, no price cap — agent must apply it via the UI
         "start_url": "https://www.autoscout24.de/lst/volkswagen/polo?atype=C&cy=D&damaged_listing=exclude",
         "success_fn": _has_number,
-        "max_steps": 18,
+        "max_steps": 20,
     },
     {
         "id": "contact_form_fill",

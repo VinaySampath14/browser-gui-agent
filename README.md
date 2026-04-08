@@ -118,16 +118,16 @@ Results are saved to `eval/results/<task_id>.json` after each run.
 ========================================================================
 TASK                   SUCCESS   STEPS   LATENCY    FAILURE MODE
 ------------------------------------------------------------------------
-cheapest_car           PASS      4       18.3
-first_golf_specs       PASS      5       22.1
-bmw_filter_count       PASS      3       14.8
-ui_polo_price_filter   PASS      7       31.2
-contact_form_fill      PASS      9       38.5
+cheapest_car           PASS      1       12.0
+first_golf_specs       PASS      1       11.0
+bmw_filter_count       PASS      1       10.7
+ui_polo_price_filter   PASS      4       24.4
+contact_form_fill      PASS      8       166.8
 ========================================================================
 
 Success rate : 5/5
-Avg steps    : 5.6
-Avg latency  : 25.0s
+Avg steps    : 3.0
+Avg latency  : 45.0s
 Results saved: eval/results/
 ```
 

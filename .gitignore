@@ -39,5 +39,5 @@ Desktop.ini
 
 # Project-generated artifacts
 screenshots/
-eval/results/
+eval/results/*.json
 replay/*.html
