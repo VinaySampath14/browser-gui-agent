@@ -1,0 +1,8 @@
+playwright==1.58.0
+playwright-stealth
+langchain==1.2.15
+langchain-openai==1.1.12
+langgraph==1.1.6
+openai==2.30.0
+pillow==12.2.0
+python-dotenv
